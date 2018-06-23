@@ -16,9 +16,12 @@ import javax.microedition.khronos.opengles.GL10;
 import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
 import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glClearColor;
+import static android.opengl.GLES20.glGetUniformLocation;
+import static android.opengl.GLES20.glUseProgram;
 import static android.opengl.GLES20.glViewport;
 
 public class MainRenderer implements GLSurfaceView.Renderer {
+
 
     private static final int POSITION_COMPONENT_COUNT = 2;
     private static final int BYTES_PER_FLOAT = 4;
@@ -71,6 +74,12 @@ public class MainRenderer implements GLSurfaceView.Renderer {
         String fragmentShaderSource = FileUtils.readTextFileFromResource(context, R.raw.simple_fragment_shader);
         int vertexShader = ShaderHelper.compileVertexShader(vertexShaderSource);
         int fragmentShader = ShaderHelper.compileFragmentShader(fragmentShaderSource);
+        int program = ShaderHelper.linkProgram(vertexShader, fragmentShader);
+
+        if(!ShaderHelper.validateProgram(program))
+            return;
+
+        glUseProgram(program);
     }
 
     @Override
